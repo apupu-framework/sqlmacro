@@ -1,7 +1,56 @@
+function flipBrace(c){
+  switch (c) {
+    case '}': return '{';
+    case '{': return '}';
+    case '[': return ']';
+    case ']': return '[';
+    default:
+      throw new SyntaxError('cannot flip the specified brace ' + c );
+  }
+}
 
+
+function splitByComma(s) {
+  console.error({s});
+  let  lastIndex = 0;
+  const stack = [];
+  const result = [];
+  for( let i=0; i<s.length; i++ ) {
+    if ( (s[i] === ',') && (stack.length ===0 ) ) {
+      result.push( s.substring( lastIndex, i ) );
+      lastIndex=i+1;
+    } else if ( s[i] === '[' ||  s[i] === '{'  ) {
+      stack.push( s[i] );
+    } else if ( s[i] === ']' ||  s[i] === '}'  ) {
+      if ( stack.length === 0 ) {
+        throw new SyntaxError( 'found an unmatched brace' );
+      } else if ( flipBrace( stack[stack.length-1]) !== s[i] ) {
+        throw new SyntaxError( 'expected ' + stack[stack.length-1] + ' but found ' + s[i] );
+      } else {
+        stack.pop();
+      }
+    }
+  }
+  result.push( s.substring( lastIndex, s.length ) );
+  console.error( result );
+  return result;
+}
+
+function parseParams(input) {
+  // params : arg0, ...arg1, arg2
+  const inputArr1 = input.split(':');
+  const [key,value] = 2<=inputArr1.length ? inputArr1 : [null,...inputArr1];
+  console.log({input,key,value});
+  const args = splitByComma(value).map(e=>e.trim())
+  return args;
+}
 
 function sqlmacro( strings, ...values ) {
-  const s =  strings.map((s,i)=>(s + ((i in values ) ? values[i] : '' ) )  ).join('');
+  const input          =  strings.map((s,i)=>(s + ((i in values ) ? values[i] : '' ) )  ).join('').trim();
+  const inputArr       = input.split('\n');
+  const inputFirstLine = inputArr.shift();
+  const s = inputArr.join('\n');
+
   const result = [
     'const __result = [];',
     'const __write = (v)=>__result.push(v);'
@@ -28,23 +77,28 @@ function sqlmacro( strings, ...values ) {
   }
   result.push( 'return __result.join(\'\\n\');' );
   const script = result.join('\n');
-  console.error( script );
-  return (new Function( 'arg0', script ))
+  const params =  parseParams(inputFirstLine);
+  console.error({ script, params} );
+  return (new Function( ...params, script ))
 }
 
-const flg  = "(()=>{console.error('👿  some malicious code👿 ');return true})()";
-const hello = 'hello';
-const world = 'world';
+function test() {
+  const flg  = "(()=>{console.error('👿  some malicious code👿 ');return true})()";
+  const hello = 'hello';
+  const world = 'world';
 
-const result = sqlmacro`
-  <% if ( arg0.foo ) { %>
-    ${ hello }
-  <% } else { %>
-    ${ world } 
-  <% } %>
-`({ foo: 1 });
+  const result = sqlmacro`
+    params: {foo},{arg1}
+    <% if ( foo ) { %>
+      ${ hello }
+    <% } else { %>
+      ${ world } 
+    <% } %>
+  `({ foo: false },[]);
 
-console.error( result );
+  console.error( result );
+}
+// test();
 
 
 

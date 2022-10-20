@@ -1,0 +1,36 @@
+{
+  "name": "sqlmacro",
+  "version": "0.1.0",
+  "description": "a stupidly simple template engine for SQL",
+  "main": "index.mjs",
+  "type" :"module",
+  "exports": {
+    "./common.js": {
+      "default": "./index.cjs"
+    },
+    "." : {
+      "import":  "./index.mjs",
+      "require": "./index.cjs"
+    }
+  },
+  "scripts": {
+    "make"        : "node make.js",
+    "test-es6"    : "NODE_OPTIONS='--experimental-vm-modules' jest  --watch-all index.test.mjs",
+    "test-cs"     : "NODE_OPTIONS='--experimental-vm-modules' jest  --watch-all index.test.cjs",
+    "test"        : "NODE_OPTIONS='--experimental-vm-modules' jest"
+  },
+  "jest" : {
+    "moduleFileExtensions":[ "js", "mjs", "cjs", "jsx", "ts", "tsx", "json", "node" ],
+    "testMatch":[ "**/*.test.cjs", "**/*.test.mjs" ],
+    "verbose":true
+  },
+  "author": {
+    "name" : "Atsushi Oka",
+    "url":  "https://github.com/a-oka-z/sqlmacro"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/a-oka-z/sqlmacro"
+  },
+  "license": "ISC"
+}

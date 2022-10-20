@@ -56,7 +56,8 @@ function sqlmacro( strings, ...values ) {
     'const __write = (v)=>__result.push(v);'
   ];
 
-  const fmt =(s,...args)=>'__write( `' + s.substring(...args) +'` );' ;
+  const fmtText =(s,...args)=>'__write( `' + s.substring(...args) +'` );' ;
+  const fmtCode =(s,...args)=>s.trim()[0] === '=' ? '__write(' + s.trim().substring(1) + ');': s; 
 
   const regexp = /\<%([^%]*)%\>/g;
   let lastIndex = 0;
@@ -67,15 +68,16 @@ function sqlmacro( strings, ...values ) {
       const currIndex = matched.index; 
       const matchedString = matched[1];
       const matchedAllString = matched[0];
-      result.push( fmt(s,lastIndex,currIndex) );
-      result.push( matchedString );
+      result.push( fmtText(s,lastIndex,currIndex) );
+      result.push( fmtCode(matchedString) );
       lastIndex = currIndex + matchedAllString.length;
     } else {
-      result.push( fmt(s,lastIndex) );
+      result.push( fmtText(s,lastIndex) );
       break;
     }
   }
-  result.push( 'return __result.join(\'\\n\');' );
+  // result.push( 'return __result.join(\'\\n\');' );
+  result.push( 'return __result.join(\'\');' );
   const script = result.join('\n');
   const params =  parseParams(inputFirstLine);
   console.error({ script, params} );
@@ -100,6 +102,27 @@ function test() {
 }
 // test();
 
+
+function test2() {
+  const flg  = "(()=>{console.error('👿  some malicious code👿 ');return true})()";
+  const hello = 'hello';
+  const world = 'world';
+
+  const result = sqlmacro`
+    params: {flg=false,tbc_name="hello_tbl"}={},
+    SELECT
+    <% if ( flg ) { %>
+      cat_name
+    <% } else { %>
+      dog_name
+    <% } %>
+    FROM
+      <%= tbc_name %>
+  `({ flg: false },[]);
+
+  console.error( result );
+}
+test2();
 
 
 

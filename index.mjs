@@ -11,7 +11,7 @@ function flipBrace(c){
 
 
 function splitByComma(s) {
-  console.error({s});
+  // console.error({s});
   let  lastIndex = 0;
   const stack = [];
   const result = [];
@@ -32,7 +32,7 @@ function splitByComma(s) {
     }
   }
   result.push( s.substring( lastIndex, s.length ) );
-  console.error( result );
+  // console.error( result );
   return result;
 }
 
@@ -40,7 +40,7 @@ function parseParams(input) {
   // params : arg0, ...arg1, arg2
   const inputArr1 = input.split(':');
   const [key,value] = 2<=inputArr1.length ? inputArr1 : [null,...inputArr1];
-  console.log({input,key,value});
+  // console.log({input,key,value});
   const args = splitByComma(value).map(e=>e.trim())
   return args;
 }
@@ -80,7 +80,7 @@ function sqlmacro( strings, ...values ) {
   result.push( 'return __result.join(\'\');' );
   const script = result.join('\n');
   const params =  parseParams(inputFirstLine);
-  console.error({ script, params} );
+  // console.error({ script, params} );
   return (new Function( ...params, script ))
 }
 

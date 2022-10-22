@@ -53,8 +53,8 @@ generates
 #### Don't Use This Module If You Don't Understand What You Are Doing ####
 
 This module is inherently vulnerable for SQL injection. If it is properly
-applied, it will reduce your code drastically. But if you are careless 
-for SQL injection, the result is catastrophic.
+applied, it will reduce your code. But if you are careless for SQL injection,
+the result is catastrophic.
 
 You most likely to do something like :
 ```
@@ -72,19 +72,19 @@ You most likely to do something like :
 
   console.error( result );
 ```
-which generates following :
-```
-    UPDATE  a_table
-           (foo,bar,bam)
-    VALUES (:foo,:bar,:bam)
-    WHERE
-       ...
-```
 
-It seems convinient but this instantly opens the door to the malicious code to
-execute any code.
+which appearently gives malicious attackers a widely open door.
 
+If you want to set values which come from outside, you must sanitize your
+values manually. This module does not do it for you.
 
+I recommend you to apply this module only for conditional generation as you
+have seen in above. 
+ 
+
+ History
+--------------------------------------------------------------------------------
+- v0.1.0  Released. (Sat, 22 Oct 2022 14:24:45 +0900) 
 
 
 

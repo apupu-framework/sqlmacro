@@ -54,7 +54,7 @@ generates
 ```
 
 
-#### Don't Use This Module If You Don't Understand What You Are Doing ####
+#### DON'T USE THIS MODULE IF YOU DON'T UNDERSTAND WHAT YOU ARE DOING ####
 
 This module is inherently vulnerable for SQL injection. If it is properly
 applied, it will reduce your code. But if you are careless for SQL injection,

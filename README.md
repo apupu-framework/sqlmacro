@@ -77,7 +77,9 @@ You most likely to do something like :
   console.error( result );
 ```
 
-which appearently gives malicious attackers a widely open door.
+which appearently gives malicious attackers a widely open door. 
+
+You are warned.
 
 If you want to set values which come from outside, you must sanitize your
 values manually. This module does not do it for you.
@@ -90,6 +92,5 @@ like the C preprocessor.
  History
 --------------------------------------------------------------------------------
 - v0.1.0  Released. (Sat, 22 Oct 2022 14:24:45 +0900) 
-
 
 

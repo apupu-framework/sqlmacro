@@ -4,6 +4,10 @@
 This is a stupidly simple template engine for SQL.
 
 ```
+  import { sqlmacro } from 'sqlmacro';
+  // or
+  const { sqlmacro } = require('sqlmacro');
+
   const result = sqlmacro`
   params: {flg=false},
   SELECT

@@ -83,7 +83,8 @@ If you want to set values which come from outside, you must sanitize your
 values manually. This module does not do it for you.
 
 I recommend you to apply this module only for conditional generation as you
-have seen in above. 
+have seen in above; it still gives you an amount of benefit in my oppinion,
+like the C preprocessor.
  
 
  History

@@ -104,12 +104,8 @@ function test() {
 
 
 function test2() {
-  const flg  = "(()=>{console.error('👿  some malicious code👿 ');return true})()";
-  const hello = 'hello';
-  const world = 'world';
-
   const result = sqlmacro`
-    params: {flg=false,tbc_name="hello_tbl"}={},
+    params: {flg=false},
     SELECT
     <% if ( flg ) { %>
       cat_name
@@ -117,12 +113,53 @@ function test2() {
       dog_name
     <% } %>
     FROM
-      <%= tbc_name %>
+      animals
   `({ flg: false },[]);
 
   console.error( result );
 }
-test2();
+// test2();
+
+
+
+function test3() {
+  const result = sqlmacro`
+    params: {column_name='cat_name'},
+    SELECT
+      <%=column_name%>
+    FROM
+      animals
+  `({ column_name: 'dog_name' });
+
+  console.error( result );
+}
+// test3();
+
+function test4(request) {
+  const data = request.json;
+  const columns = Object.keys( data );
+
+  const result = sqlmacro`
+    params: {columns},
+    UPDATE  animals
+           (<%= columns.join(',')       %>)
+    VALUES (<%= columns.map(c=>':' + c) %>)
+    WHERE
+       ...
+  `({ data, columns });
+
+  console.error( result );
+}
+// test4({json:{ foo:1,bar:2,bam:3  } });
+const json = 
+  {
+    "a) VALUES(1);DROP animals;COMMIT;" : "foo",
+    "BAR":"bar",
+  };
+// test4({json });
+
+
+
 
 
 

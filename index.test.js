@@ -3,6 +3,7 @@ test('basic0', ()=>{
   const world = 'world';
 
   const result = sqlmacro`
+    params: arg0
     <% if ( arg0.foo ) { %>
       ${ hello }
     <% } else { %>
@@ -20,6 +21,7 @@ test('basic1', ()=>{
   const world = 'world';
 
   const result = sqlmacro`
+    params: arg0
     <% if ( arg0 ) { %>
       ${ hello }
     <% } else { %>
@@ -37,6 +39,7 @@ test('don\'t do this', ()=>{
   const world = 'world';
 
   const result = sqlmacro`
+    params: arg0
     <% if ( ${ flg } ) { %>
       ${ hello }
     <% } else { %>

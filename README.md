@@ -140,7 +140,8 @@ like the C preprocessor.
 
  History
 --------------------------------------------------------------------------------
-- v0.1.0   Released. (Sat, 22 Oct 2022 14:24:45 +0900) 
-- v0.1.1   Removed unnecessary logging ouputs (Sat, 22 Oct 2022 14:53:06 +0900)
+- v0.1.0   Released.                            (Sat, 22 Oct 2022 14:24:45 +0900) 
+- v0.1.1   Removed unnecessary logging ouputs   (Sat, 22 Oct 2022 14:53:06 +0900)
+- v0.1.2   Supported dynamic directive lines    (Wed, 02 Nov 2022 20:38:29 +0900)
 
 

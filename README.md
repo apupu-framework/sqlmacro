@@ -3,7 +3,7 @@
 ==============================
 This is a stupidly simple template engine for SQL.
 
-```Java Server Pages
+```javascript
   import { sqlmacro } from 'sqlmacro';
   // or
   const { sqlmacro } = require('sqlmacro');
@@ -24,7 +24,7 @@ This is a stupidly simple template engine for SQL.
 
 generates:
 
-```
+```SQL
     SELECT
 
       dog_name
@@ -34,7 +34,7 @@ generates:
 ```
 
 The code below
-```Java Server Pages
+```javascript
   const result = sqlmacro`
     params: {column_name='cat_name'},
     SELECT
@@ -46,7 +46,7 @@ The code below
   console.error( result );
 ```
 generates
-```
+```SQL
     SELECT
       dog_name
     FROM
@@ -58,7 +58,7 @@ generates
 When the first line of the input starts with a hash mark, the macro engine
 takes it as a directive line.
 
-```Java Server Pages
+```javascript
    #params: foo
    SELECT * FROM users 
    <% if (foo) {%>WHERE id=100<% } %>
@@ -72,7 +72,7 @@ of [the function expression][]
 
 [the function expression]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
 
-```Java Server Pages
+```javascript
    #params: a,b=1,c=3
    SELECT * FROM users 
    <% if (c===3) {%>WHERE id=100<% } %>
@@ -80,7 +80,7 @@ of [the function expression][]
 
 is compiled as if 
 
-```JavaScript
+```javascript
   ((a,b=1,c=3)=>{
     s='';
     s+='SELECT * FROM users';

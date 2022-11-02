@@ -36,20 +36,50 @@ function splitByComma(s) {
   return result;
 }
 
-function parseParams(input) {
-  // params : arg0, ...arg1, arg2
-  const inputArr1 = input.split(':');
-  const [key,value] = 2<=inputArr1.length ? inputArr1 : [null,...inputArr1];
-  // console.log({input,key,value});
-  const args = splitByComma(value).map(e=>e.trim())
+function parseParams(paramLines) {
+  let args=[];
+
+  for ( const input of paramLines ) {
+    // params : arg0, ...arg1, arg2no param line
+    const inputArr1 = input.split(':').map(e=>e.trim());
+    const [key,value] = 2<=inputArr1.length ? inputArr1 : [ null, ...inputArr1 ];
+    // console.log({input,key,value});
+    if ( key === null ) {
+      throw new SyntaxError( 'no directive was specified' ); 
+    } else if ( key === 'params' ) {
+      args = [ ...args, ...(splitByComma(value).map(e=>e.trim()))];
+    } else {
+      throw new SyntaxError( `encountered an unknown directive "${ key }" ... ignored` ); 
+    }
+  }
   return args;
 }
 
-function sqlmacro( strings, ...values ) {
-  const input          =  strings.map((s,i)=>(s + ((i in values ) ? values[i] : '' ) )  ).join('').trim();
-  const inputArr       = input.split('\n');
-  const inputFirstLine = inputArr.shift();
+const joinStringsAndValues = ( strings, values )=>strings.map((s,i)=>(s + ((i in values ) ? values[i] : '' ) )  ).join('').trim();
+
+const extractParamLine = ( input )=>{
+  const inputArr  = input.split('\n');
+  const paramLines = [];
+
+  while ( 0<inputArr.length ) {
+    const line = inputArr[0].trim();
+    if ( /^#/.exec(line) ) {
+      inputArr.shift();
+      paramLines.push( line.substring(1).trim() );
+    } else if (/^params:/.exec(inputArr[0]) ) {
+      inputArr.shift();
+      paramLines.push( line.trim() );
+    } else {
+      break;
+    }
+  }
   const s = inputArr.join('\n');
+  return [ s, paramLines ];
+};
+
+function sqlmacro( strings, ...values ) {
+  const input          =  joinStringsAndValues( strings, values );
+  const [ s, paramLines ] = extractParamLine( input );
 
   const result = [
     'const __result = [];',
@@ -79,7 +109,7 @@ function sqlmacro( strings, ...values ) {
   // result.push( 'return __result.join(\'\\n\');' );
   result.push( 'return __result.join(\'\');' );
   const script = result.join('\n');
-  const params =  parseParams(inputFirstLine);
+  const params =  parseParams(paramLines);
   // console.error({ script, params} );
   return (new Function( ...params, script ))
 }

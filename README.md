@@ -110,7 +110,7 @@ applied, it will reduce your code. But if you are careless for SQL injection,
 the result is catastrophic.
 
 You most likely to do something like :
-```
+```javascript
   const data = request.json;
   const columns = Object.keys( data );
 

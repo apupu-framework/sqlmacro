@@ -140,3 +140,32 @@ test('No.7 unknown directive', ()=>{
 
 
 
+test('No.8 code with ` ', ()=>{
+  expect(
+    sqlmacro`
+    # params: foo
+    <% if ( foo==='foo' ) { %>
+      \`hello\`
+    <% } else { %>
+      world
+    <% } %>
+  `('foo').trim()
+  ).toBe( '`hello`' );
+});
+
+
+
+test('No.8 code with \\ ', ()=>{
+  expect(
+    sqlmacro`
+    # params: foo
+    <% if ( foo==='foo' ) { %>
+      \\hello\\
+    <% } else { %>
+      world
+    <% } %>
+  `('foo').trim()
+  ).toBe( '\\hello\\' );
+});
+
+

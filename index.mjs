@@ -86,8 +86,9 @@ function sqlmacro( strings, ...values ) {
     'const __write = (v)=>__result.push(v);'
   ];
 
-  const fmtText =(s,...args)=>'__write( `' + s.substring(...args) +'` );' ;
-  const fmtCode =(s,...args)=>s.trim()[0] === '=' ? '__write(' + s.trim().substring(1) + ');': s; 
+  const escapeText=(s)=>s.replaceAll('\\', '\\\\' ).replaceAll('`','\\`').replaceAll('$','\\$');
+  const fmtText =(s,...args)=>'__write( `' + escapeText( s.substring(...args) ) +'` );' ;
+  const fmtCode =(s,...args)=>s.trim()[0] === '=' ? '__write(' + escapeText( s.trim().substring(1)) + ');': s;
 
   const regexp = /\<%([^%]*)%\>/g;
   let lastIndex = 0;

@@ -3,7 +3,7 @@
 ==============================
 This is a stupidly simple template engine for SQL.
 
-```
+```Java Server Pages
   import { sqlmacro } from 'sqlmacro';
   // or
   const { sqlmacro } = require('sqlmacro');
@@ -34,7 +34,7 @@ generates:
 ```
 
 The code below
-```
+```Java Server Pages
   const result = sqlmacro`
     params: {column_name='cat_name'},
     SELECT
@@ -51,6 +51,55 @@ generates
       dog_name
     FROM
       animals
+```
+
+
+#### Directives ####
+When the first line of the input starts with a hash mark, the macro engine
+takes it as a directive line.
+
+```Java Server Pages
+   #params: foo
+   SELECT * FROM users 
+   <% if (foo) {%>WHERE id=100<% } %>
+```
+
+A directive line consists colon `:`. The part before `:` is taken as a verb of
+the directive and the other part is taken as its parameters.
+
+Now `sqlmacro` supports only directive `params` which are treated as JavaScript`s  parameters
+of [the function expression][]
+
+[the function expression]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Functions
+
+```Java Server Pages
+   #params: a,b=1,c=3
+   SELECT * FROM users 
+   <% if (c===3) {%>WHERE id=100<% } %>
+```
+
+is compiled as if 
+
+```JavaScript
+  ((a,b=1,c=3)=>{
+    s='';
+    s+='SELECT * FROM users';
+    if ( c===3) { s+='WHERE id=100 }
+  })
+```
+
+The `sqlmacro` uses `Function` class which accepts parameter definitions as
+arguments; `sqlmacro` had to parse the expression ( that is `a,b=1,c=3` part ).
+The current parser is far from perfect so use it with care.
+
+If the first line starts with a string `params:` with any leading spaces, it is
+taken as a directive line,too. This is intended to keep backward compatibility;
+don't use this if you are working with a newly created project, though.
+
+```Java Server Pages
+   params: a,b=1,c=3
+   SELECT * FROM users 
+   <% if (c===3) {%>WHERE id=100<% } %>
 ```
 
 

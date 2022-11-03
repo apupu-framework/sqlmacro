@@ -3,26 +3,28 @@
 ==============================
 This is a stupidly simple template engine for SQL.
 
+The code below 
+
 ```javascript
   import { sqlmacro } from 'sqlmacro';
   // or
   const { sqlmacro } = require('sqlmacro');
 
   const result = sqlmacro`
-  params: {flg=false},
-  SELECT
-  <% if ( flg ) { %>
-    cat_name
-  <% } else { %>
-    dog_name
-  <% } %>
-  FROM
-    animals
+    params: {flg=false},
+    SELECT
+    <% if ( flg ) { %>
+      cat_name
+    <% } else { %>
+      dog_name
+    <% } %>
+    FROM
+      animals
   `({ flg: false });
   console.error( result );
 ```
 
-generates:
+generates
 
 ```SQL
     SELECT
@@ -45,7 +47,9 @@ The code below
 
   console.error( result );
 ```
+
 generates
+
 ```SQL
     SELECT
       dog_name
@@ -78,7 +82,7 @@ of [the function expression][]
    <% if (c===3) {%>WHERE id=100<% } %>
 ```
 
-is compiled as if 
+is compiled to something loosely like :
 
 ```javascript
   ((a,b=1,c=3)=>{
@@ -93,8 +97,9 @@ arguments; **sqlmacro** had to parse the expression ( that is `a,b=1,c=3` part )
 The current parser is far from perfect so use it with care.
 
 If the first line starts with a string `params:` with any leading spaces, it is
-taken as a directive line,too. This is intended to keep backward compatibility;
-don't use this if you are working with a newly created project, though.
+also taken as a directive line,too. This is intended to keep backward
+compatibility; don't use this if you are working with a newly created project,
+though.
 
 ```javascript
    params: a,b=1,c=3
@@ -136,7 +141,43 @@ values manually. This module does not do it for you.
 I recommend you to apply this module only for conditional generation as you
 have seen in above; it still gives you an amount of benefit in my oppinion,
 like the C preprocessor.
- 
+
+
+#### About JSP ####
+
+[JSP (Java Server Page)][JSP] is a old-school technology which is a kind of
+template engines. It was developped around 2000 and it is still being used
+today. JSP has gradually lost popularity for years; most people tent to start
+new projects with modern template engines these days. But it has still some
+strong points which are missing in modern technologies in 2022.
+
+**sqlmacro** takes some of syntax from [JSP][].
+
+[JSP]:  https://www.infoworld.com/article/3336161/what-is-jsp-introduction-to-javaserver-pages.html
+
+Around 2010, I wrote a module which named "JSSP" which syntax was loosely
+resembling JSP's syntax but its host language is not Java but JavaScript. After
+that, by my nature, I abandoned the project "JSSP" under a deep nested
+directory in my harddisk without publishing it to any repositories whicy are
+available to people; I am just interested in just writing code, not interested
+in publishing them.
+
+This time I have to write some SQL things due to my personal economical problem;
+this became a good reason to revibe the project in a reality of 2022. 
+
+This module is named after `SQL` like database things but you can generate
+whatever you want. Please, just be careful about code injection and don't
+forget sanitize your parameter values before put them into the macro engine.
+
+I actually use **sqlmacro** to share code between mjs/cjs so that the files
+written in *.js are converted to both *.mjs and *.cjs in which process is
+totally not related to SQL itself.
+
+
+### Conclusion ###
+
+That's all. Thank you very much for reading such a long meaningless thing.
+
 
  History
 --------------------------------------------------------------------------------
@@ -144,5 +185,6 @@ like the C preprocessor.
 - v0.1.1   Removed unnecessary logging ouputs   (Sat, 22 Oct 2022 14:53:06 +0900)
 - v0.1.2   Supported dynamic directive lines    (Wed, 02 Nov 2022 20:38:29 +0900)
 - v0.1.3   Now it can handle \` and \\ properly (Wed, 02 Nov 2022 21:35:04 +0900)
+- v0.1.4   Updated README.md                    (Thu, 03 Nov 2022 16:41:35 +0900)
 
 

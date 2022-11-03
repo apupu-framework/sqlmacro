@@ -1,6 +1,6 @@
 {
   "name": "sqlmacro",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "a stupidly simple template engine for SQL",
   "main": "index.mjs",
   "type" :"module",

@@ -176,15 +176,16 @@ totally not related to SQL itself.
 
 ### Conclusion ###
 
-That's all. Thank you very much for reading such a long meaningless thing.
+That's all. Thank you very much for your attention.
 
 
  History
 --------------------------------------------------------------------------------
-- v0.1.0   Released.                            (Sat, 22 Oct 2022 14:24:45 +0900) 
-- v0.1.1   Removed unnecessary logging ouputs   (Sat, 22 Oct 2022 14:53:06 +0900)
-- v0.1.2   Supported dynamic directive lines    (Wed, 02 Nov 2022 20:38:29 +0900)
-- v0.1.3   Now it can handle \` and \\ properly (Wed, 02 Nov 2022 21:35:04 +0900)
-- v0.1.4   Updated README.md                    (Thu, 03 Nov 2022 16:41:35 +0900)
+- v0.1.0 released.                                  (Sat, 22 Oct 2022 14:24:45 +0900) 
+- v0.1.1 removed unnecessary logging ouputs         (Sat, 22 Oct 2022 14:53:06 +0900)
+- v0.1.2 supported dynamic directive lines          (Wed, 02 Nov 2022 20:38:29 +0900)
+- v0.1.3 now it can handle \` and \\ properly       (Wed, 02 Nov 2022 21:35:04 +0900)
+- v0.1.4 updated README.md                          (Thu, 03 Nov 2022 16:41:35 +0900)
+- v0.1.5 show the content of the script when error  (Thu, 03 Nov 2022 18:43:44 +0900)
 
 

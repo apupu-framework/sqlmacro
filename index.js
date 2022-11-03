@@ -112,7 +112,12 @@ function sqlmacro( strings, ...values ) {
   const script = result.join('\n');
   const params =  parseParams(paramLines);
   // console.error({ script, params} );
-  return (new Function( ...params, script ))
+  try {
+    return (new Function( ...params, script ))
+  } catch ( e ) {
+    console.error(e);
+    throw new SyntaxError( e.message + " in \n" + script ,{cause:e});
+  }
 }
 
 function test() {

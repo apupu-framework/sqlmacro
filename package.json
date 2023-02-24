@@ -19,6 +19,12 @@
     "test-cs"     : "                                         jest index.test.cjs",
     "test"        : "npm run make; npm run test-es6; npm run test-cs"
   },
+  "files": [
+    "README.md",
+    "index.cjs",
+    "index.mjs",
+    "package.json"
+  ],
   "jest" : {
     "moduleFileExtensions":[ "js", "mjs", "cjs", "jsx", "ts", "tsx", "json", "node" ],
     "testMatch":[ "**/*.test.cjs", "**/*.test.mjs" ],

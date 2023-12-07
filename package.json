@@ -15,8 +15,8 @@
   },
   "scripts": {
     "make"        : "node make.js",
-    "test-es6"    : "NODE_OPTIONS='--experimental-vm-modules' jest index.test.mjs",
-    "test-cs"     : "                                         jest index.test.cjs",
+    "test-es6"    : "NODE_OPTIONS='--experimental-vm-modules' node --test index.test.mjs",
+    "test-cs"     : "                                         node --test index.test.cjs",
     "test"        : "npm run make; npm run test-es6; npm run test-cs"
   },
   "files": [

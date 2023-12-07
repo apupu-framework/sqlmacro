@@ -1,4 +1,4 @@
-const { sqlmacro } = require("sqlmacro");
+const { sqlmacro } = require("sqlmacro")
 
 test('basic0', ()=>{
   const hello = 'hello';
@@ -169,5 +169,7 @@ test('No.8 code with \\ ', ()=>{
   `('foo').trim()
   ).toBe( '\\hello\\' );
 });
+
+
 
 

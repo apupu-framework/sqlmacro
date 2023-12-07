@@ -1,3 +1,16 @@
+function plainsql(strings,...values) {
+  // console.log( strings, values );
+  return (
+    strings
+    .map( (e,i)=> e + (values[i]||'').toString() )
+    .join('')
+    .split('\n')
+    .map( (e)=> e.trim() )
+    .join( '\n' )
+    .trim()
+  );
+};
+
 function flipBrace(c){
   switch (c) {
     case '}': return '{';
@@ -45,11 +58,11 @@ function parseParams(paramLines) {
     const [key,value] = 2<=inputArr1.length ? inputArr1 : [ null, ...inputArr1 ];
     // console.log({input,key,value});
     if ( key === null ) {
-      throw new SyntaxError( 'no directive was specified' ); 
+      throw new SyntaxError( 'no directive was specified' );
     } else if ( key === 'params' ) {
       args = [ ...args, ...(splitByComma(value).map(e=>e.trim()))];
     } else {
-      throw new SyntaxError( `encountered an unknown directive "${ key }" ... ignored` ); 
+      throw new SyntaxError( `encountered an unknown directive "${ key }" ... ignored` );
     }
   }
   return args;
@@ -95,8 +108,8 @@ function sqlmacro( strings, ...values ) {
   for (;;) {
     // console.error(lastIndex);
     let matched = regexp.exec( s );
-    if ( matched ) { 
-      const currIndex = matched.index; 
+    if ( matched ) {
+      const currIndex = matched.index;
       const matchedString = matched[1];
       const matchedAllString = matched[0];
       result.push( fmtText(s,lastIndex,currIndex) );
@@ -130,7 +143,7 @@ function test() {
     <% if ( foo ) { %>
       ${ hello }
     <% } else { %>
-      ${ world } 
+      ${ world }
     <% } %>
   `({ foo: false },[]);
 
@@ -187,13 +200,10 @@ function test4(request) {
   console.error( result );
 }
 // test4({json:{ foo:1,bar:2,bam:3  } });
-const json = 
+const json =
   {
     "a) VALUES(1);DROP animals;COMMIT;" : "foo",
     "BAR":"bar",
   };
 // test4({json });
-
-
-
 

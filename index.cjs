@@ -134,4 +134,5 @@ function sqlmacro( strings, ...values ) {
 }
 
 
+module.exports.plainsql = plainsql;
 module.exports.sqlmacro = sqlmacro;

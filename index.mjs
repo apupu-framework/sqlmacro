@@ -134,4 +134,5 @@ function sqlmacro( strings, ...values ) {
 }
 
 
+export{ plainsql };
 export{ sqlmacro };

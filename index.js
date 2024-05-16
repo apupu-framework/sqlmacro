@@ -1,4 +1,4 @@
-function plainsql(strings,...values) {
+const  plainsql = (strings,...values)=>{
   // console.log( strings, values );
   return (
     strings
@@ -11,7 +11,7 @@ function plainsql(strings,...values) {
   );
 };
 
-function flipBrace(c){
+const flipBrace = (c)=>{
   switch (c) {
     case '}': return '{';
     case '{': return '}';
@@ -20,10 +20,10 @@ function flipBrace(c){
     default:
       throw new SyntaxError('cannot flip the specified brace ' + c );
   }
-}
+};
 
 
-function splitByComma(s) {
+const splitByComma = (s)=>{
   // console.error({s});
   let  lastIndex = 0;
   const stack = [];
@@ -47,9 +47,9 @@ function splitByComma(s) {
   result.push( s.substring( lastIndex, s.length ) );
   // console.error( result );
   return result;
-}
+};
 
-function parseParams(paramLines) {
+const parseParams = (paramLines)=>{
   let args=[];
 
   for ( const input of paramLines ) {
@@ -66,11 +66,13 @@ function parseParams(paramLines) {
     }
   }
   return args;
-}
+};
 
-const joinStringsAndValues = ( strings, values )=>strings.map((s,i)=>(s + ((i in values ) ? values[i] : '' ) )  ).join('').trim();
+const defaultJoinStringsAndValues  = ( strings, values )=>strings.map((s,i)=>(s + ((i in values ) ? values[i]  : '' ) ) ).join('').trim();
+const postgresJoinStringsAndValues = ( strings, values )=>strings.map((s,i)=>(s + ((i in values ) ? ` \$${i} ` : '' ) ) ).join('').trim();
+const mysqlJoinStringsAndValues    = ( strings, values )=>strings.map((s,i)=>(s + ((i in values ) ? ` ? ` : ''      ) ) ).join('').trim();
 
-const extractParamLine = ( input )=>{
+const defaultExtractParamLine = ( input )=>{
   const inputArr  = input.split('\n');
   const paramLines = [];
 
@@ -90,46 +92,55 @@ const extractParamLine = ( input )=>{
   return [ s, paramLines ];
 };
 
-function sqlmacro( strings, ...values ) {
-  const input          =  joinStringsAndValues( strings, values );
-  const [ s, paramLines ] = extractParamLine( input );
+const createSqlMacro = (joinStringsAndValues)=>{
+  const extractParamLine = defaultExtractParamLine;
 
-  const result = [
-    'const __result = [];',
-    'const __write = (v)=>__result.push(v);'
-  ];
+  const  sqlmacro = ( strings, ...values )=>{
+    const input          =  joinStringsAndValues( strings, values );
+    const [ s, paramLines ] = extractParamLine( input );
 
-  const escapeText=(s)=>s.replaceAll('\\', '\\\\' ).replaceAll('`','\\`').replaceAll('$','\\$');
-  const fmtText =(s,...args)=>'__write( `' + escapeText( s.substring(...args) ) +'` );' ;
-  const fmtCode =(s,...args)=>s.trim()[0] === '=' ? '__write(' + escapeText( s.trim().substring(1)) + ');': s;
+    const result = [
+      'const __result = [];',
+      'const __write = (v)=>__result.push(v);'
+    ];
 
-  const regexp = /\<%([^%]*)%\>/g;
-  let lastIndex = 0;
-  for (;;) {
-    // console.error(lastIndex);
-    let matched = regexp.exec( s );
-    if ( matched ) {
-      const currIndex = matched.index;
-      const matchedString = matched[1];
-      const matchedAllString = matched[0];
-      result.push( fmtText(s,lastIndex,currIndex) );
-      result.push( fmtCode(matchedString) );
-      lastIndex = currIndex + matchedAllString.length;
-    } else {
-      result.push( fmtText(s,lastIndex) );
-      break;
+    const escapeText=(s)=>s.replaceAll('\\', '\\\\' ).replaceAll('`','\\`').replaceAll('$','\\$');
+    const fmtText =(s,...args)=>'__write( `' + escapeText( s.substring(...args) ) +'` );' ;
+    const fmtCode =(s,...args)=>s.trim()[0] === '=' ? '__write(' + escapeText( s.trim().substring(1)) + ');': s;
+
+    const regexp = /\<%([^%]*)%\>/g;
+    let lastIndex = 0;
+    for (;;) {
+      // console.error(lastIndex);
+      let matched = regexp.exec( s );
+      if ( matched ) {
+        const currIndex = matched.index;
+        const matchedString = matched[1];
+        const matchedAllString = matched[0];
+        result.push( fmtText(s,lastIndex,currIndex) );
+        result.push( fmtCode(matchedString) );
+        lastIndex = currIndex + matchedAllString.length;
+      } else {
+        result.push( fmtText(s,lastIndex) );
+        break;
+      }
     }
-  }
-  // result.push( 'return __result.join(\'\\n\');' );
-  result.push( 'return __result.join(\'\');' );
-  const script = result.join('\n');
-  const params =  parseParams(paramLines);
-  // console.error({ script, params} );
-  try {
-    return (new Function( ...params, script ))
-  } catch ( e ) {
-    console.error(e);
-    throw new SyntaxError( e.message + " in \n" + script ,{cause:e});
-  }
-}
+    // result.push( 'return __result.join(\'\\n\');' );
+    result.push( 'return __result.join(\'\');' );
+    const script = result.join('\n');
+    const params =  parseParams(paramLines);
+    // console.error({ script, params} );
+    try {
+      return (new Function( ...params, script ))
+    } catch ( e ) {
+      console.error(e);
+      throw new SyntaxError( e.message + " in \n" + script ,{cause:e});
+    }
+  };
+  return sqlmacro;
+};
+
+const sqlmacro   = createSqlMacro( defaultJoinStringsAndValues );
+const pgsqlmacro = createSqlMacro( postgresJoinStringsAndValues );
+const mysqlmacro = createSqlMacro( mysqlJoinStringsAndValues );
 

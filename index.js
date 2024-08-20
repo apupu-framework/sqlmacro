@@ -95,12 +95,18 @@ const DELETE_LEFT_COMMA  = '__sqlmacro__LEFT__sqlmacro__';
 const DELETE_RIGHT_COMMA = '__sqlmacro__RIGHT__sqlmacro__';
 const LOOKUP_LEFT_COMMA  = `(,)(\\s*)(\\b${DELETE_LEFT_COMMA}\\b)`;
 const LOOKUP_RIGHT_COMMA = `(\\b${DELETE_RIGHT_COMMA}\\b)(\\s*)(,)`;
+const LOOKUP_LEFT_TAG  = `(\\b${DELETE_LEFT_COMMA}\\b)`;
+const LOOKUP_RIGHT_TAG = `(\\b${DELETE_RIGHT_COMMA}\\b)`;
 function remove_comma( s ) {
   return (
     s.replace( new RegExp( LOOKUP_RIGHT_COMMA, 'gm'),(s,s0,s1,s2)=>{
       return `${s1} `;
     }).replace( new RegExp( LOOKUP_LEFT_COMMA, 'gm'),(s,s0,s1,s2)=>{
       return ` ${s1}`;
+    }).replace( new RegExp( LOOKUP_RIGHT_TAG,  'gm'),(s,s0,s1,s2)=>{
+      return ``;
+    }).replace( new RegExp( LOOKUP_LEFT_TAG,   'gm'),(s,s0,s1,s2)=>{
+      return ``;
     })
   )
 }
@@ -109,25 +115,29 @@ function sqlmacro_output_filter( s ) {
 }
 
 const SHARED_LIB = [
-  "const DELETE_LEFT_COMMA  = '__sqlmacro__LEFT__sqlmacro__';",
-  "const DELETE_RIGHT_COMMA = '__sqlmacro__RIGHT__sqlmacro__';",
-  "const LOOKUP_LEFT_COMMA  = `(,)(\\\\s*)(\\\\b${DELETE_LEFT_COMMA}\\\\b)`;",
-  "const LOOKUP_RIGHT_COMMA = `(\\\\b${DELETE_RIGHT_COMMA}\\\\b)(\\\\s*)(,)`;",
-  "function remove_comma( s ) {",
-  "  return (",
-  "    s.replace( new RegExp( LOOKUP_RIGHT_COMMA, 'gm'),(s,s0,s1,s2)=>{",
-  "      return `${s1} `;",
-  "    }).replace( new RegExp( LOOKUP_LEFT_COMMA, 'gm'),(s,s0,s1,s2)=>{",
-  "      return ` ${s1}`;",
-  "    })",
-  "  )",
-  "}",
-  "function sqlmacro_output_filter( s ) {",
-  "  return remove_comma( s );",
-  "}",
+  "const DELETE_LEFT_COMMA  = '__sqlmacro__LEFT__sqlmacro__';                 ",
+  "const DELETE_RIGHT_COMMA = '__sqlmacro__RIGHT__sqlmacro__';                ",
+  "const LOOKUP_LEFT_COMMA  = `(,)(\\\\s*)(\\\\b${DELETE_LEFT_COMMA}\\\\b)`;  ",
+  "const LOOKUP_RIGHT_COMMA = `(\\\\b${DELETE_RIGHT_COMMA}\\\\b)(\\\\s*)(,)`; ",
+  "const LOOKUP_LEFT_TAG  = `(\\\\b${DELETE_LEFT_COMMA}\\\\b)`;               ",
+  "const LOOKUP_RIGHT_TAG = `(\\\\b${DELETE_RIGHT_COMMA}\\\\b)`;              ",
+  "function remove_comma( s ) {                                               ",
+  "  return (                                                                 ",
+  "    s.replace( new RegExp( LOOKUP_RIGHT_COMMA, 'gm'),(s,s0,s1,s2)=>{       ",
+  "      return `${s1} `;                                                     ",
+  "    }).replace( new RegExp( LOOKUP_LEFT_COMMA, 'gm'),(s,s0,s1,s2)=>{       ",
+  "      return ` ${s1}`;                                                     ",
+  "    }).replace( new RegExp( LOOKUP_RIGHT_TAG,  'gm'),(s,s0,s1,s2)=>{       ",
+  "      return ``;                                                           ",
+  "    }).replace( new RegExp( LOOKUP_LEFT_TAG,   'gm'),(s,s0,s1,s2)=>{       ",
+  "      return ``;                                                           ",
+  "    })                                                                     ",
+  "  )                                                                        ",
+  "}                                                                          ",
+  "function sqlmacro_output_filter( s ) {                                     ",
+  "  return remove_comma( s );                                                ",
+  "}                                                                          ",
 ];
-
-
 
 
 function sqlmacro( strings, ...values ) {

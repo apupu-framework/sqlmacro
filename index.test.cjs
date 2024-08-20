@@ -332,3 +332,66 @@ test('No.10 DELETE LEFT COMMA', ()=>{
 
 
 
+test('No.11 DELETE RIGHT TAG', ()=>{
+  assert.equal(
+    sqlmacro`
+    # params: foo
+    SELECT
+      ${DELETE_RIGHT_COMMA}
+      <% if ( 5 < foo  ) { %> ,TEST <% } %>
+      <% if ( 4 < foo  ) { %> ,TEST <% } %>
+      <% if ( 3 < foo  ) { %> ,TEST <% } %>
+      <% if ( 2 < foo  ) { %> ,TEST <% } %>
+      <% if ( 1 < foo  ) { %> ,TEST <% } %>
+    FROM
+      FOO
+
+  `(-1).trim(),
+  `
+    SELECT
+      |
+      |
+      |
+      |
+      |
+      |
+    FROM
+      FOO
+  `.trim().replace( /\|/g,'' )
+  );
+});
+
+
+
+
+test('No.12 DELETE LEFT TAG', ()=>{
+  assert.equal(
+    sqlmacro`
+    # params: foo
+    SELECT
+      <% if ( 1 < foo  ) { %> TEST, <% } %>
+      <% if ( 2 < foo  ) { %> TEST, <% } %>
+      <% if ( 3 < foo  ) { %> TEST, <% } %>
+      <% if ( 4 < foo  ) { %> TEST, <% } %>
+      <% if ( 5 < foo  ) { %> TEST, <% } %>
+      ${DELETE_LEFT_COMMA}
+    FROM
+      FOO
+
+  `(-1).trim(),
+  `
+    SELECT
+      |
+      |
+      |
+      |
+      |
+      |
+    FROM
+      FOO
+  `.trim().replace( /\|/g,'' )
+  );
+});
+
+
+

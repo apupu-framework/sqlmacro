@@ -248,5 +248,6 @@ That's all. Thank you very much for your attention.
 - v0.1.5 show the content of the script when error    (Thu, 03 Nov 2022 18:43:44 +0900)
 - v0.1.6 add DELETE\_RIGHT\_COMMA DELETE\_LEFT\_COMMA (Tue, 20 Aug 2024 13:53:50 +0900)
 - v0.1.7 fix typo                                     (Tue, 20 Aug 2024 15:30:33 +0900)
+- v0.1.8 remove tag even if not comma is found        (Tue, 20 Aug 2024 16:09:10 +0900)
 
 

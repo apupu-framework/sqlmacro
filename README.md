@@ -107,6 +107,65 @@ though.
    <% if (c===3) {%>WHERE id=100<% } %>
 ```
 
+#### Deleting Comma ####
+
+Version V0.1.6 introduces a new feature: redundant comma eraser.
+
+The one who creates queries dynamically often faces to a problem like following:
+
+```sql
+# params: foo
+SELECT
+  <% if ( 1 < foo  ) { %> TEST, <% } %>
+  <% if ( 2 < foo  ) { %> TEST, <% } %>
+  <% if ( 3 < foo  ) { %> TEST, <% } %>
+  <% if ( 4 < foo  ) { %> TEST, <% } %>
+  <% if ( 5 < foo  ) { %> TEST, <% } %>
+FROM
+  FOO
+```
+
+You have to delete the last comma from SELECT clause of the generated query. As
+it may seems to be very easy to overcome but it is counterintuitively a very
+tedious problem because you have to determine where the last comma.
+
+Use `DELETE\_LEFT\_COMMA`:
+
+```sql
+# params: foo
+SELECT
+  <% if ( 1 < foo  ) { %> FOO, <% } %>
+  <% if ( 2 < foo  ) { %> BAR, <% } %>
+  <% if ( 3 < foo  ) { %> BUM, <% } %>
+  <% if ( 4 < foo  ) { %> BAZ, <% } %>
+  <% if ( 5 < foo  ) { %> QUX, <% } %>
+  ${DELETE_LEFT_COMMA}
+FROM
+  FOO
+```
+
+`sqlmacro` deletes it for you.
+
+If you are favor of placing comma in the beginning of each line
+use `DELETE\_RIGHT\_COMMA`:
+
+```sql
+sqlmacro`
+# params: foo
+SELECT
+  ${DELETE_RIGHT_COMMA}
+  <% if ( 5 < foo  ) { %> ,FOO <% } %>
+  <% if ( 4 < foo  ) { %> ,BAR <% } %>
+  <% if ( 3 < foo  ) { %> ,BUM <% } %>
+  <% if ( 2 < foo  ) { %> ,BAZ <% } %>
+  <% if ( 1 < foo  ) { %> ,QUX <% } %>
+FROM
+  FOO
+```
+
+`DELETE\_RIGHT\_COMMA` and`DELETE\_LEFT\_COMMA`  are exported as the same name.
+
+
 
 #### DON'T USE THIS MODULE IF YOU DON'T UNDERSTAND WHAT YOU ARE DOING ####
 
@@ -181,11 +240,12 @@ That's all. Thank you very much for your attention.
 
  History
 --------------------------------------------------------------------------------
-- v0.1.0 released.                                  (Sat, 22 Oct 2022 14:24:45 +0900) 
-- v0.1.1 removed unnecessary logging ouputs         (Sat, 22 Oct 2022 14:53:06 +0900)
-- v0.1.2 supported dynamic directive lines          (Wed, 02 Nov 2022 20:38:29 +0900)
-- v0.1.3 now it can handle \` and \\ properly       (Wed, 02 Nov 2022 21:35:04 +0900)
-- v0.1.4 updated README.md                          (Thu, 03 Nov 2022 16:41:35 +0900)
-- v0.1.5 show the content of the script when error  (Thu, 03 Nov 2022 18:43:44 +0900)
+- v0.1.0 released.                                    (Sat, 22 Oct 2022 14:24:45 +0900) 
+- v0.1.1 removed unnecessary logging ouputs           (Sat, 22 Oct 2022 14:53:06 +0900)
+- v0.1.2 supported dynamic directive lines            (Wed, 02 Nov 2022 20:38:29 +0900)
+- v0.1.3 now it can handle \` and \\ properly         (Wed, 02 Nov 2022 21:35:04 +0900)
+- v0.1.4 updated README.md                            (Thu, 03 Nov 2022 16:41:35 +0900)
+- v0.1.5 show the content of the script when error    (Thu, 03 Nov 2022 18:43:44 +0900)
+- v0.1.6 add DELETE\_RIGHT\_COMMA DELETE\_LEFT\_COMMA (Tue, 20 Aug 2024 13:53:50 +0900)
 
 

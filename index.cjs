@@ -90,11 +90,52 @@ const extractParamLine = ( input )=>{
   return [ s, paramLines ];
 };
 
+
+const DELETE_LEFT_COMMA  = '__sqlmacro__LEFT__sqlmacro__';
+const DELETE_RIGHT_COMMA = '__sqlmacro__RIGHT__sqlmacro__';
+const LOOKUP_LEFT_COMMA  = `(,)(\\s*)(\\b${DELETE_LEFT_COMMA}\\b)`;
+const LOOKUP_RIGHT_COMMA = `(\\b${DELETE_RIGHT_COMMA}\\b)(\\s*)(,)`;
+function remove_comma( s ) {
+  return (
+    s.replace( new RegExp( LOOKUP_RIGHT_COMMA, 'gm'),(s,s0,s1,s2)=>{
+      return `${s1} `;
+    }).replace( new RegExp( LOOKUP_LEFT_COMMA, 'gm'),(s,s0,s1,s2)=>{
+      return ` ${s1}`;
+    })
+  )
+}
+function sqlmacro_output_filter( s ) {
+  return remove_comma( s );
+}
+
+const SHARED_LIB = [
+  "const DELETE_LEFT_COMMA  = '__sqlmacro__LEFT__sqlmacro__';",
+  "const DELETE_RIGHT_COMMA = '__sqlmacro__RIGHT__sqlmacro__';",
+  "const LOOKUP_LEFT_COMMA  = `(,)(\\\\s*)(\\\\b${DELETE_LEFT_COMMA}\\\\b)`;",
+  "const LOOKUP_RIGHT_COMMA = `(\\\\b${DELETE_RIGHT_COMMA}\\\\b)(\\\\s*)(,)`;",
+  "function remove_comma( s ) {",
+  "  return (",
+  "    s.replace( new RegExp( LOOKUP_RIGHT_COMMA, 'gm'),(s,s0,s1,s2)=>{",
+  "      return `${s1} `;",
+  "    }).replace( new RegExp( LOOKUP_LEFT_COMMA, 'gm'),(s,s0,s1,s2)=>{",
+  "      return ` ${s1}`;",
+  "    })",
+  "  )",
+  "}",
+  "function sqlmacro_output_filter( s ) {",
+  "  return remove_comma( s );",
+  "}",
+];
+
+
+
+
 function sqlmacro( strings, ...values ) {
   const input          =  joinStringsAndValues( strings, values );
   const [ s, paramLines ] = extractParamLine( input );
 
   const result = [
+    ...SHARED_LIB,
     'const __result = [];',
     'const __write = (v)=>__result.push(v);'
   ];
@@ -121,7 +162,7 @@ function sqlmacro( strings, ...values ) {
     }
   }
   // result.push( 'return __result.join(\'\\n\');' );
-  result.push( 'return __result.join(\'\');' );
+  result.push( 'return sqlmacro_output_filter( __result.join(\'\'));' );
   const script = result.join('\n');
   const params =  parseParams(paramLines);
   // console.error({ script, params} );
@@ -134,5 +175,13 @@ function sqlmacro( strings, ...values ) {
 }
 
 
+
+
+
+
 module.exports.plainsql = plainsql;
 module.exports.sqlmacro = sqlmacro;
+module.exports.DELETE_RIGHT_COMMA = DELETE_RIGHT_COMMA;
+module.exports.DELETE_LEFT_COMMA  = DELETE_LEFT_COMMA;
+module.exports.DRC  = DELETE_RIGHT_COMMA;
+module.exports.DLC  = DELETE_LEFT_COMMA;

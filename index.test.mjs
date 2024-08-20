@@ -1,4 +1,4 @@
-import{ sqlmacro,plainsql } from "sqlmacro";
+import{ sqlmacro,plainsql,DELETE_RIGHT_COMMA, DELETE_LEFT_COMMA } from "sqlmacro";
 import  { test, describe, it, before, after } from 'node:test' ;
 import assert from 'node:assert/strict';
 
@@ -267,6 +267,68 @@ test('No.8 code with \\ ', ()=>{
   , '\\hello\\' );
 });
 
+
+
+test('No.9 DELETE RIGHT COMMA', ()=>{
+  assert.equal(
+    sqlmacro`
+    # params: foo
+    SELECT
+      ${DELETE_RIGHT_COMMA}
+      <% if ( 5 < foo  ) { %> ,TEST <% } %>
+      <% if ( 4 < foo  ) { %> ,TEST <% } %>
+      <% if ( 3 < foo  ) { %> ,TEST <% } %>
+      <% if ( 2 < foo  ) { %> ,TEST <% } %>
+      <% if ( 1 < foo  ) { %> ,TEST <% } %>
+    FROM
+      FOO
+
+  `(3).trim(),
+  `
+    SELECT
+      |
+      |
+      |
+      |
+        TEST |
+       ,TEST |
+    FROM
+      FOO
+  `.trim().replace( /\|/g,'' )
+  );
+});
+
+
+
+
+test('No.10 DELETE LEFT COMMA', ()=>{
+  assert.equal(
+    sqlmacro`
+    # params: foo
+    SELECT
+      <% if ( 1 < foo  ) { %> TEST, <% } %>
+      <% if ( 2 < foo  ) { %> TEST, <% } %>
+      <% if ( 3 < foo  ) { %> TEST, <% } %>
+      <% if ( 4 < foo  ) { %> TEST, <% } %>
+      <% if ( 5 < foo  ) { %> TEST, <% } %>
+      ${DELETE_LEFT_COMMA}
+    FROM
+      FOO
+
+  `(3).trim(),
+  `
+    SELECT
+       TEST, |
+       TEST  |
+      |
+      |
+      |
+      |
+    FROM
+      FOO
+  `.trim().replace( /\|/g,'' )
+  );
+});
 
 
 
